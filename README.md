@@ -27,3 +27,5 @@ The dataframe should load the following variables:
 ##### $ War_Duration  : int  15 ...
  
  For data sources, please refer to the dissertation.
+ 
+ For citation, please contact ststm@outlook.de.
