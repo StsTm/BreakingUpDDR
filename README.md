@@ -33,4 +33,4 @@ The dataframe should load the following variables:
  
 ## Replication code
  
-The replication code is provided in .rmd format. The code was run on R 3.4.1. Please be aware that the part that loads the data has to be customised to your specific r folder.
+The replication code is provided in .rmd format. The code was run on R 3.4.1. Please be aware that the part that loads the data has to be customised to your specific r folder and dataframe.
