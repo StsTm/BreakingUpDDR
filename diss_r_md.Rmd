@@ -1,0 +1,292 @@
+---
+title: "diss_data"
+output: pdf_document
+---
+
+```{r Options, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+#library(foreign) ##to import .dta data
+#library(Hmisc) ##for descriptive statistics
+library(ggplot2)
+library(ggthemes)
+#library(corrgram)
+#library(data.table) ##for converting rownames to variables
+
+##for wordscores
+#library(countrycode)
+#library(classInt)
+#library(maps)
+library(rworldmap)
+#library(quanteda)
+#library(readtext)
+#library(RColorBrewer)
+
+
+##For formatting the essay
+#library(rticles)
+
+##For analysis
+library(ISLR) ##for glm
+library(stargazer)
+
+
+##for survival analysis
+library(survival)
+
+library(survminer)
+
+library(xtable)
+
+library(broom)
+```
+
+
+```{r Data_Up, message=FALSE, warning=FALSE}
+##Import mydata_short
+
+mydata <- read.csv2("mydata_short.csv", header = TRUE, sep = ";")
+
+mydata <- mydata %>%
+  select(Country, Accord_Name, War_Start_Year, Accord_Year, War_Recur_Year, War_Deaths, Peace_Duration, DDR_dummy, PKO, disarm_prov, disarm_implem, demob_prov, demob_implem, reint_prov, reint_implem, GDP_per_capita, Polity_IV, BVI)
+
+mydata$War_Duration <- mydata$Accord_Year - mydata$War_Start_Year
+
+mydata$GDP_per_capita <- log(mydata$GDP_per_capita)
+mydata$War_Deaths <- log(mydata$War_Deaths)
+
+#mydata$reint_implem_strata <- ifelse((mydata$reint_implem > 1), (mydata$reint_implem_strata <- "implemented"), (mydata$reint_implem_strata <- "not implemented"))
+
+#mydata$disarm_implem_strata <- ifelse((mydata$disarm_implem > 1), (mydata$disarm_implem_strata <- "implemented"), (mydata$disarm_implem_strata <- "not implemented"))
+
+#mydata$demob_implem_strata <- ifelse((mydata$demob_implem > 1), (mydata$demob_implem_strata <- "implemented"), (mydata$demob_implem_strata <- "not implemented"))
+
+##New stargazer function
+
+stargazer2 <- function(model, odd.ratio = F, ...) {
+  if(!("list" %in% class(model))) model <- list(model)
+    
+  if (odd.ratio) {
+    coefOR2 <- lapply(model, function(x) exp(coef(x)))
+    seOR2 <- lapply(model, function(x) exp(coef(x)) * summary(x)$coef[, 2])
+    p2 <- lapply(model, function(x) summary(x)$coefficients[, 4])
+    stargazer(model, coef = coefOR2, se = seOR2, p = p2, ...)
+    
+  } else {
+    stargazer(model, ...)
+  }
+}
+
+```
+
+```{r Descriptive, results='asis'}
+##Summary Statistics
+mydata_summary <- mydata %>%
+  select(War_Start_Year, Accord_Year, War_Recur_Year, War_Deaths, Peace_Duration, DDR_dummy, PKO, disarm_prov, disarm_implem, demob_prov, demob_implem, reint_prov, reint_implem, GDP_per_capita, Polity_IV)
+
+stargazer(mydata_summary, 
+          summary = TRUE,
+          covariate.labels = c("War start year", "Accord year", "War recurrence year", "War deaths (log)", "Peace duration", " DDR dummy", "Peacekeeping operation", "Disarmament provision", "Disarmament implementation", "Demobilisation provision", "Demobilisation implementation", "Reintegration provision", "Reintegration implementation", "GDP per capita (log)", "Polity IV")
+          )
+
+```
+
+
+```{r Balance, message=TRUE, warning=TRUE, results='asis'}
+#Testing whether the character of the prior war has an effect on the inclusion of DDR in the peace agreements
+
+##Logistic regression on DDR_Dummy
+
+mydata_balance <- mydata %>%
+  select(DDR_dummy, War_Duration, War_Deaths, PKO, GDP_per_capita, reint_prov, disarm_prov, demob_prov, Polity_IV)
+
+mydata_balance <- na.omit(mydata_balance)
+
+balance_test_DDR <- glm(DDR_dummy ~ War_Duration + War_Deaths + PKO + GDP_per_capita + Polity_IV, data = mydata_balance, family = binomial)
+
+balance_test_disarm <- glm(disarm_prov ~ War_Duration + War_Deaths + PKO + GDP_per_capita + Polity_IV, data = mydata_balance, family = binomial)
+
+balance_test_demob <- glm(demob_prov ~ War_Duration + War_Deaths + PKO + GDP_per_capita + Polity_IV, data = mydata_balance, family = binomial)
+
+balance_test_reint <- glm(reint_prov ~ War_Duration + War_Deaths + PKO + GDP_per_capita + Polity_IV, data = mydata_balance, family = binomial)
+
+stargazer(balance_test_DDR, balance_test_disarm, balance_test_demob, balance_test_reint, title = "Balance tests", align = TRUE, no.space = FALSE, 
+          #style = "apsr", 
+          dep.var.labels = c("DDR", "Disarmament", "Demobilisation", "Reintegration"), 
+          covariate.labels = c("War duration", "War deaths (log)", "Peacekeeping operation", "GDP per capita (log)", "Polity IV")
+          )
+
+```
+
+
+```{r Analysis} 
+##summaries
+mydata_survival <- mydata %>%
+  select(War_Start_Year, Accord_Year, War_Recur_Year, War_Deaths, Peace_Duration, PKO, disarm_implem, demob_implem, reint_implem, BVI, War_Duration, GDP_per_capita, Polity_IV)
+
+
+s <- with(mydata_survival, Surv(Peace_Duration, BVI))
+```
+
+
+```{r coxph}
+#basic model with no comparison
+Naive_Model <- coxph(s ~ disarm_implem + demob_implem + reint_implem, method = "efron", data = mydata_survival)
+
+coef.vector1 <- Naive_Model$coefficients[2]
+
+
+#Partial controlled model
+Model_with_War_Controls <- coxph(s ~ disarm_implem + demob_implem + reint_implem + War_Duration + War_Deaths, method = "efron", data = mydata_survival)
+
+coef.vector2 <- Model_with_War_Controls$coefficients[2]
+
+#Fully controlled model
+Model_with_full_controls <- coxph(s ~ disarm_implem + demob_implem + reint_implem + War_Duration + War_Deaths + PKO + GDP_per_capita + Polity_IV, method = "efron", data = mydata_survival)
+
+coef.vector3 <- Model_with_full_controls$coefficients[2]
+
+
+#estimate baseline hazard
+
+#base_haz2.2 <- basehaz(coxmodel2.2, centered = TRUE)
+#base_haz2.2
+
+#estimate model reint for plot
+coxmodel_plot_reint <- survfit(s ~ reint_implem, data = mydata_survival)
+
+coxmodel_plot_disarm <- survfit(s ~ disarm_implem, data = mydata_survival)
+
+coxmodel_plot_demob <- survfit(s ~ demob_implem, data = mydata_survival)
+
+#getting se.or
+
+get.or.se <- function(model) {
+  broom::tidy(model) %>% 
+    mutate(or = exp(estimate),
+           var.diag = diag(vcov(model)),
+           or.se = sqrt(or^2 * var.diag)) %>%
+    select(or.se) %>% unlist %>% unname
+}
+
+orse1 <- get.or.se(Naive_Model)
+orse2 <- get.or.se(Model_with_War_Controls)
+orse3 <- get.or.se(Model_with_full_controls)
+#stargazer output
+
+stargazer(Naive_Model, Model_with_War_Controls, Model_with_full_controls, title = "Cox Proportional Hazards Models", align = TRUE, no.space = FALSE,
+          covariate.labels = c("Disarmament implementation", "Demobilisation implementation", "Reintegration implementation", "War duration", "War deaths (log)", "Peacekeeping operation", "GDP per capita (log)", "Polity IV"),
+          dep.var.labels = c("War recurrence"),
+          column.labels = c("Naive model", "Model with war intensity controls", "Model with full controls"),
+          apply.coef = exp,
+          report = "vc*t",
+          #apply.t = exp,
+          #apply.se = exp,
+          t.auto = F,
+          p.auto = F
+          #se=list(orse1, orse2, orse3)
+          )
+
+summary(Model_with_full_controls)
+
+```
+
+```{r Surv_plot}
+
+
+#estimate models for plots
+coxmodel_plot_reint <- survfit(s ~ reint_implem, data = mydata_survival)
+
+coxmodel_plot_disarm <- survfit(s ~ disarm_implem, data = mydata_survival)
+
+coxmodel_plot_demob <- survfit(s ~ demob_implem, data = mydata_survival)
+
+##reint plot
+ggsurvplot(
+  coxmodel_plot_reint, 
+  data = mydata_survival,
+  size = 1,                 # change line size
+  palette = 
+    c("#CC0033", "#FF3300", "#FF9933", "#66FF00"),# custom color palettes
+  
+  conf.int = TRUE,          # Add confidence interval
+  conf.int.alpha = 0.1,
+  
+  pval = FALSE,              # Add p-value
+  
+  censor = FALSE,
+  
+  title ="Reintegration",
+  ylab = "Probability of peace maintained",
+  xlab = "Time since peace agreement (years)",
+  legend.title = "Level of implementation",
+  legend.labs = 
+    c("none", "minimal", "intermediate", "full"),    # Change legend labels
+  
+  risk.table = FALSE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  ggtheme = theme_economist()      # Change ggplot2 theme
+)
+
+
+##disarm plot
+ggsurvplot(
+  coxmodel_plot_disarm, 
+  data = mydata_survival,
+  size = 1,                 # change line size
+  palette = 
+    c("#CC0033", "#FF3300", "#FF9933", "#66FF00"),# custom color palettes
+  
+  conf.int = TRUE,          # Add confidence interval
+  conf.int.alpha = 0.1,
+  
+  pval = FALSE,              # Add p-value
+  
+  censor = FALSE,
+  
+  title ="Disarmament",
+  ylab = "Probability of peace maintained",
+  xlab = "Time since peace agreement (years)",
+  legend.title = "Level of implementation",
+  legend.labs = 
+    c("none", "minimal", "intermediate", "full"),    # Change legend labels
+  
+  risk.table = FALSE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  ggtheme = theme_economist()      # Change ggplot2 theme
+)
+
+
+
+##demob plot
+ggsurvplot(
+  coxmodel_plot_demob, 
+  data = mydata_survival,
+  size = 1,                 # change line size
+  palette = 
+    c("#CC0033", "#FF3300", "#FF9933", "#66FF00"),# custom color palettes
+  
+  conf.int = TRUE,          # Add confidence interval
+  conf.int.alpha = 0.1,
+  
+  pval = FALSE,              # Add p-value
+  
+  censor = FALSE,
+  
+  title ="Demobilisation",
+  ylab = "Probability of peace maintained",
+  xlab = "Time since peace agreement (years)",
+  legend.title = "Level of implementation",
+  legend.labs = 
+    c("none", "minimal", "intermediate", "full"),    # Change legend labels
+  
+  risk.table = FALSE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  ggtheme = theme_economist()      # Change ggplot2 theme
+)
+```
+
