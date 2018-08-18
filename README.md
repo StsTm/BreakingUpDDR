@@ -4,7 +4,7 @@ This repository contains the replication data and code for my MSc dissertation a
 For loading this data, please be aware that the seperator is ";" instead of ",".
 
 
-The data should load the following variables:
+The dataframe should load the following variables:
 
 ##### $ Country       : Factor w/ 44 levels "Afghanistan", ...
 ##### $ Accord_Name   : Factor w/ 81 levels "","Abidjan Peace Agreement , Nov 30 1996" ...
