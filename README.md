@@ -1,7 +1,7 @@
 # BreakingUpDDR
 This repository contains the replication data and code for my MSc dissertation at the University College London.
 
-##Replication data
+## Replication data
 
 For loading this data, please be aware that the seperator is ";" instead of ",".
 
@@ -31,6 +31,6 @@ The dataframe should load the following variables:
  
  For citation, please contact ststm@outlook.de.
  
-##Replication code
+##R eplication code
  
 The replication code is provided in .rmd format. The code was run on R 3.4.1. Please be aware that the part that loads the data has to be customised to your specific r folder.
