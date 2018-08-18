@@ -15,7 +15,7 @@ cowcode;Country;War_Start_Year;War_Deaths;Accord_Name;Accord_Year;BVI;War_Recur_
 ;Central African Republic;2002;406;;2004;1;2006;2;1;-1;0;1;1;2;1;1;2;1;1;1;414,03
 ;Chad;1966;7703;;2005;1;2005;0;1;-2;1;1;1;1;1;1;1;0;0;0;835,20
 ;Columbia;1964;;The Uribe Accords;1984;1;1987;3;0;8;0;0;0;0;0;0;0;0;0;0;3718,10
-;Columbia;1964;3385;Acuerdo final Gobierno Nacional-Ejército Popular De Liberación;1991;1;1993;2;1;8;0;;;;;;;;;;4336,66
+;Columbia;1964;3385;Acuerdo final Gobierno Nacional-EjÃ©rcito Popular De LiberaciÃ³n;1991;1;1993;2;1;8;0;;;;;;;;;;4336,66
 ;Columbia;1964;19436;Government-FARC Humanitarian Exchange Accord;2001;1;2003;2;0;7;0;0;0;0;0;0;0;0;0;0;4774,98
 ;Columbia;1964;22374;Santa Fe de Ralito Accord to contribute to peace in Columbia;2003;1;2003;0;1;7;0;1;1;2;1;1;2;0;0;0;4945,96
 ;Columbia;1964;24048;Santa Fe de Ralito II;2004;1;2004;0;1;7;0;;;;;;;;;;5139,98
@@ -25,7 +25,7 @@ cowcode;Country;War_Start_Year;War_Deaths;Accord_Name;Accord_Year;BVI;War_Recur_
 522;Djibouti;1991;343;Accord de paix et de la reconciliation nationale , Dec 26 1994;1994;1;1999;5;1;-8;0;0;0;0;0;0;0;1;1;2;1325,99
 522;Djibouti;1998;368;Agreement for the Reform and Civil Concord , May 12 2001;2001;0;;17;1;2;0;1;1;2;1;1;3;1;1;3;1325,99
 ;DR Congo;1961;71291;Lusaka Accord;1999;1;1999;0;0;0;1;0;0;0;0;0;0;0;0;0;319,71
-;DR Congo;1961;68333;Accord de Cessez-le-Feu et de Cessation des Hostilités;1999;1;1999;0;1;0;0;;;;;;;;;;319,71
+;DR Congo;1961;68333;Accord de Cessez-le-Feu et de Cessation des HostilitÃ©s;1999;1;1999;0;1;0;0;;;;;;;;;;319,71
 ;DR Congo;1961;85644;Inter-Congolese Political Negotiations - The Final Act;2003;1;2006;3;1;1;1;1;1;3;1;1;3;1;1;1;282,84
 92;El Salvador;1979;5861;Chapultepec Peace Agreement, Jan 16 1992;1992;0;;26;1;7;1;1;1;3;1;1;3;1;1;3;2281,34
 ;Georgia;1992;2660;The Sochi Agreement;1992;1;2004;12;1;4;0;;;;;;;;;;1509,88
@@ -59,11 +59,11 @@ cowcode;Country;War_Start_Year;War_Deaths;Accord_Name;Accord_Year;BVI;War_Recur_
 ;Russia;1994;6141;Russia-Chechen Agreement;1996;1;1996;0;0;3;0;0;0;0;0;0;0;0;0;0;5714,55
 ;Russia;1994;6141;Peace Treaty and  Pinciples of Interrelation between Russian Federation and the Chechen Republic of Ichkeria;1997;1;1999;2;0;3;0;0;0;0;0;0;0;0;0;0;5804,14
 ;Rwanda;1990;5631;The Protocol of Agreement between the Government of the Republic of Rwanda and the Rwandese Patriotic Front on the Rule of Law;1992;1;1993;1;0;-7;0;0;0;0;0;0;0;0;0;0;401,26
-517;Rwanda;1990;507592;Arusha Accord – 4 August 1993, Aug 04 1993;1993;1;1993;0;1;-7;1;1;0;0;1;0;0;1;0;0;392,25
+517;Rwanda;1990;507592;Arusha Accord â€“ 4 August 1993, Aug 04 1993;1993;1;1993;0;1;-7;1;1;0;0;1;0;0;1;0;0;392,25
 433;Senegal;1990;179;General Peace Agreement between the Government of the Republic of Senegal and MFDC, Dec 30 2004;1990;1;2011;21;1;-1;0;1;0;0;1;0;0;1;0;0;846,86
 451;Sierra Leone;1991;8563;Abidjan Peace Agreement , Nov 30 1996;1996;1;1996;0;1;4;0;1;0;0;1;0;0;1;0;0;323,10
 ;Sierra Leone;1991;9781;The Conakry Peace Agreement, ECOWAS Six Month Peace Plan for Sierra Leone;1997;1;2000;3;1;0;1;1;1;2;1;1;2;1;1;1;302,48
-451;Sierra Leone;1991;19515;Lomé Peace Agreement , Jul 07 1999;1999;1;1999;0;1;0;1;1;1;2;1;1;1;1;1;1;292,78
+451;Sierra Leone;1991;19515;LomÃ© Peace Agreement , Jul 07 1999;1999;1;1999;0;1;0;1;1;1;2;1;1;1;1;1;1;292,78
 ;Somalia;1982;18048;Addis Ababa Agreement;1993;1;1993;0;1;0;1;1;1;1;1;0;0;0;0;0;187,37
 ;Somalia;1982;20010;The Cairo Declaration on Somalia;1997;1;2001;4;0;0;0;0;0;0;0;0;0;0;0;0;291,23
 560;South Africa;1960;4469;Interim Constitution Accord, Nov 17 1993;1993;0;;25;1;8;0;1;1;3;0;0;0;1;1;3;5423,59
